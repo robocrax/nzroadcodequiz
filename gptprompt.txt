@@ -1,0 +1,75 @@
+
+i have a json with the following data:
+
+
+  {
+    "ID": 210,
+    "Question": "When you have a learner licence you must always drive with a supervisor. What is a supervisor?",
+    "A": "An adult that sits next to you in the passenger seat.",
+    "B": "Someone that has held a valid full NZ licence for at least 2 years and sits in the passenger seat.",
+    "C": "Anyone in the car that has held a valid full NZ licence for at least 2 years.",
+    "D": "Someone who sits in the passenger seat with a restricted NZ licence.",
+    "E": null,
+    "Correct": "B",
+    "Page": "28",
+    "Image": "question_210_q246.jpg"
+  },
+  {
+    "ID": 66,
+    "Question": "When must you pull over and allow an ambulance or fire engine to pass?",
+    "A": "At all times.",
+    "B": "At an uncontrolled intersection.",
+    "C": "When it is operating its siren or flashing lights.",
+    "D": "When it is turning right and you have the right of way.",
+    "E": null,
+    "Correct": "C",
+    "Page": "117",
+    "Image": "question_66_police-flash-lights.gif"
+  },
+  {
+    "ID": 105,
+    "Question": "When driving into bright sunlight, you should use sunglasses and your vehicle sun visors for safety. You are also advised to:",
+    "A": "Turn the headlights of your vehicle on.",
+    "B": "Drive safely on the far left of the road.",
+    "C": "Look at and drive close to the centre of the road.",
+    "D": "Pull over or stop and wait for a few minutes.",
+    "E": null,
+    "Correct": "D",
+    "Page": "189",
+    "Image": "question_105_q117.jpg"
+  },
+
+create an animated fun interactive js html css page which asks for a questionnaire and displays the relevant image for the question with the multiple choice options. if a user selects the correct answer then turn green otherwise turn red and tell the user the correct answer and then move on to the next question. keep the questions in random order every time but do not repeat them in the current session  
+
+retrieve the questions from a file placed in data/questions.json file. the question will be displayed on the top-left corner, or under the image on mobile
+
+the images are placed in the images/ directory. the image will be displayed on the top-right corner of the screen, and at the top on mobiles.
+
+give me an animated all centered narrow page of 500px max width the next and previous button can be floating on the right and left side of the screen 
+
+the answers buttons need a unified layout using material design, move the option identifier letter to a fixed corner inside the button with a different background so the options only contain text. after the question is answered change it after 3 seconds  with a visual indicator of the timer. the buttons will always be in 2 columns so roughly 50% width. if there are 5 answers then i expect 3 rows with the last row only having 1 option and the other 50% blank
+
+below it can be 2 options: Submit answer, Skip question
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+this is perfect, just a few tweaks: 
+
+user cannot visually identify which option they selected, maybe add a visual cue like a border or different colour to show which option they have selected before submitting
+
+the layout is perfect, just if we can utilize more height that would be good. can we centerize the quiz window and add a bit of gap between the question+image and then a little spacer/gap and then the answers and options
