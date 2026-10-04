@@ -1,811 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-NZ">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>NZ Road Code Quiz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      --primary: #6200ee;
-      --primary-dark: #3700b3;
-      --accent: #03dac6;
-      --bg: #f5f5f5;
-      --card-bg: #ffffff;
-      --correct: #2e7d32;
-      --incorrect: #c62828;
-      --text-main: #212121;
-      --text-muted: #757575;
-      --option-letter-bg: rgba(0, 0, 0, 0.08);
-      --transition-fast: 0.2s ease-out;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #e3f2fd, #e0f7fa 40%, #f5f5f5 80%);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      align-items: center;   /* <-- NEW: vertical centering */
-      min-height: 100vh;
-      padding: 20px 10px;
-    }
-
-    .quiz-shell {
-      position: relative;
-      width: 100%;
-      max-width: 780px;
-      margin: 0 auto;
-      animation: floatIn 0.6s ease-out;
-    }
-
-    @keyframes floatIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .quiz-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-      padding: 16px 16px 20px;
-      overflow: hidden;
-    }
-
-    .quiz-header {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .question-text {
-      font-size: 1rem;
-      font-weight: 600;
-      line-height: 1.4;
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    .meta {
-      margin-top: 4px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .image-wrapper {
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #eceff1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    .image-wrapper img {
-      max-width: 100%;
-      max-height: 140px;
-      object-fit: contain;
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .section-gap {
-      height: 1.4rem;
-    }
-
-    .options-grid {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .option-btn {
-      position: relative;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 12px 12px 40px;
-      text-align: left;
-      background: #fafafa;
-      color: var(--text-main);
-      font-size: 0.9rem;
-      cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-      transition:
-        background var(--transition-fast),
-        box-shadow var(--transition-fast),
-        transform var(--transition-fast),
-        color var(--transition-fast);
-      overflow: hidden;
-    }
-
-    .option-btn:hover {
-      background: #f0f0f0;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.16);
-      transform: translateY(-1px);
-    }
-
-    .option-btn.selected {
-      outline: 3px solid var(--primary);
-      background: #ede7f6;
-      transform: translateY(-2px);
-    }
-
-
-    .option-btn.disabled {
-      pointer-events: none;
-      opacity: 0.9;
-    }
-
-    .option-letter {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--option-letter-bg);
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--primary-dark);
-    }
-
-    .option-text {
-      display: block;
-    }
-
-    .option-btn.correct {
-      background: var(--correct);
-      color: #fff;
-      box-shadow: 0 4px 10px rgba(46, 125, 50, 0.5);
-    }
-
-    .option-btn.incorrect {
-      background: var(--incorrect);
-      color: #fff;
-      box-shadow: 0 4px 10px rgba(198, 40, 40, 0.5);
-    }
-
-    .option-btn.correct .option-letter,
-    .option-btn.incorrect .option-letter {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-    }
-
-    .actions-row {
-      margin-top: 14px;
-      display: flex;
-      gap: 10px;
-      justify-content: space-between;
-    }
-
-    .primary-btn,
-    .secondary-btn {
-      flex: 1;
-      border-radius: 999px;
-      border: none;
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition:
-        background var(--transition-fast),
-        box-shadow var(--transition-fast),
-        transform var(--transition-fast),
-        color var(--transition-fast);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-    }
-
-    .primary-btn {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 3px 8px rgba(98, 0, 238, 0.4);
-    }
-
-    .primary-btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 5px 14px rgba(55, 0, 179, 0.5);
-    }
-
-    .secondary-btn {
-      background: #e0e0e0;
-      color: #424242;
-    }
-
-    .secondary-btn:hover {
-      background: #d5d5d5;
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
-    }
-
-    .primary-btn.disabled,
-    .secondary-btn.disabled {
-      opacity: 0.6;
-      pointer-events: none;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .feedback {
-      margin-top: 8px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      min-height: 1.2em;
-    }
-
-    .feedback strong {
-      color: var(--primary-dark);
-    }
-
-    .timer-bar-wrapper {
-      margin-top: 8px;
-      height: 4px;
-      border-radius: 999px;
-      background: #e0e0e0;
-      overflow: hidden;
-      opacity: 0;
-      transform: scaleX(0.9);
-      transform-origin: left;
-      transition: opacity 0.15s ease-out, transform 0.15s ease-out;
-    }
-
-    .timer-bar-wrapper.active {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-
-    .timer-bar {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--primary));
-      transform-origin: left;
-      transform: scaleX(1);
-      transition: transform 3s linear;
-    }
-
-    .quiz-footer {
-      margin-top: 10px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .end-message {
-      text-align: center;
-      padding: 20px 10px;
-      font-size: 0.95rem;
-      color: var(--text-main);
-    }
-
-    @media (max-width: 640px) {
-      body {
-        align-items: ;
-        padding: 0;
-        border-radius: 0;
-      }
-
-      .quiz-card {
-        padding: 14px 12px 18px;
-      }
-
-      .quiz-header {
-        grid-template-columns: 1fr;
-      }
-
-      .image-wrapper {
-        order: -1;
-        max-height: 180px;
-      }
-    }
-
-    .stats-bar {
-       display: flex;
-       align-items: center;
-       gap: 14px;
-       margin-top: 10px;
-     }
-
-     .stats-text {
-       font-size: 0.8rem;
-       color: var(--text-muted);
-       line-height: 1.2;
-     }
-.pie-wrapper {
-  position: relative;
-  width: 46px;
-  height: 46px;
-}
-
-.pie-svg {
-  width: 46px;
-  height: 46px;
-}
-
-.pie-bg {
-  fill: none;
-  stroke: #ddd;
-  stroke-width: 4;
-}
-
-.pie-fg {
-  fill: none;
-  stroke: var(--correct);
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 100 100; /* full circle */
-  stroke-dashoffset: 100;     /* start empty */
-  transition: stroke-dashoffset 0.5s ease-out;
-}
-
-.pie-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--primary-dark);
-}
-
-#quizCardContent {
-  display: none;
-}
-
-.skeleton {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.skeleton-line {
-  height: 16px;
-  background: #e0e0e0;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  animation: pulse 1.4s infinite ease-in-out;
-}
-
-.skeleton-line.title {
-  height: 22px;
-  width: 80%;
-}
-
-.skeleton-line.small {
-  width: 40%;
-}
-
-.skeleton-image {
-  width: 100%;
-  height: 150px;
-  background: #e0e0e0;
-  border-radius: 12px;
-  margin: 14px 0;
-  animation: pulse 1.4s infinite ease-in-out;
-}
-
-.skeleton-options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.skeleton-option {
-  height: 48px;
-  background: #e0e0e0;
-  border-radius: 10px;
-  animation: pulse 1.4s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
-}
-
-  </style>
+  <meta name="description" content="Free, endless NZ Road Code practice questions with explanations and detailed stats on how you're tracking.">
+  <meta name="theme-color" content="#e9ecea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101417" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Overpass:wght@400..800&display=swap">
+  <link rel="stylesheet" href="css/app.css">
+  <script>
+    // Apply a saved theme before first paint so there's no flash.
+    try {
+      var t = localStorage.getItem('nzrc:theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
 </head>
 <body>
-  <div class="quiz-shell">
-    <div class="quiz-card" id="quizCard">
-<div id="skeletonLoader" class="skeleton">
-  <div class="skeleton-line title"></div>
-  <div class="skeleton-line small"></div>
-
-  <div class="skeleton-image"></div>
-
-  <div class="skeleton-options">
-    <div class="skeleton-option"></div>
-    <div class="skeleton-option"></div>
-    <div class="skeleton-option"></div>
-    <div class="skeleton-option"></div>
-  </div>
-</div>
-    <div id="quizCardContent">
-      <div class="quiz-header">
-        <div>
-          <div class="question-text" id="questionText">Loading question…</div>
-          <!-- <div class="meta" id="metaInfo"></div> -->
-        </div>
-        <div class="image-wrapper">
-          <img id="questionImage" src="" alt="Question image" />
-        </div>
-      </div>
-
-      <div class="section-gap"></div>
-      <div class="section-gap"></div>
-
-      <div class="options-grid" id="optionsGrid">
-        <!-- Options injected here -->
-      </div>
-
-      <div class="actions-row">
-        <button class="primary-btn" id="submitBtn">Submit answer</button>
-        <button class="primary-btn" id="nextBtn" style="display:none;">Next question</button>
-        <button class="secondary-btn" id="skipBtn">Skip question</button>
-      </div>
-
-      <div class="timer-bar-wrapper" id="timerWrapper">
-        <div class="timer-bar" id="timerBar"></div>
-      </div>
-
-      <div class="feedback" id="feedback"></div>
-
-      <div class="section-gap"></div>
-
-      <div class="quiz-footer">
-        <div class="stats-bar">
-<div class="pie-wrapper">
-  <svg class="pie-svg" viewBox="0 0 36 36">
-    <path
-      class="pie-bg"
-      d="M18 2
-         a 16 16 0 1 1 0 32
-         a 16 16 0 1 1 0 -32"
-    />
-    <path
-      id="pieProgress"
-      class="pie-fg"
-      d="M18 2
-         a 16 16 0 1 1 0 32
-         a 16 16 0 1 1 0 -32"
-    />
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="logo" viewBox="0 0 40 40">
+        <rect x="7.5" y="7.5" width="25" height="25" rx="3.5" transform="rotate(45 20 20)" fill="#ffc72c" stroke="#1e2429" stroke-width="2.5"/>
+        <path d="M15.5 27.5 18.6 12.5M24.5 27.5 21.4 12.5" fill="none" stroke="#1e2429" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M20 26.6v-2.4M20 21.4v-2.2M20 16.6v-1.6" fill="none" stroke="#1e2429" stroke-width="1.7" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L19.5 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+      <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.8c.6 3.1 2.3 4.6 3.9 6.3 1.4 1.5 2.6 3.3 2.6 5.8a6.5 6.5 0 0 1-13 0c0-2.2 1-4 2.5-5.2.1 1.5.8 2.7 2 3.2-.5-3.7.6-7.6 2-10.1Z" fill="currentColor"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V12M12 20V5M19 20v-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.3 8.3 0 1 0 10.6 10.6Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.6 3.5 5v13c3.5-.4 6.5 0 8.5 1.5 2-1.5 5-1.9 8.5-1.5V5C17 4.6 14 5 12 6.5Zm0 0v13" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></symbol>
+      <symbol id="i-redo" viewBox="0 0 24 24"><path d="M19 8.5A7.5 7.5 0 1 0 19.4 15M19.5 3.5v5h-5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v5.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.3" fill="currentColor"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l.9 12.5h9.2L17.5 7M10.2 11v5M13.8 11v5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    </defs>
   </svg>
-  <div class="pie-center" id="piePercent">0%</div>
-</div>
 
+  <a class="skip-link" href="#card">Skip to question</a>
 
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./" aria-label="NZ Road Code Quiz">
+        <svg class="brand-mark" aria-hidden="true"><use href="#logo"/></svg>
+        <span class="brand-name">Road Code Quiz</span>
+      </a>
+      <div class="topbar-actions">
+        <button class="stats-chip" id="statsChip" type="button" aria-haspopup="dialog" aria-controls="statsDialog">
+          <span class="roundel" aria-hidden="true">
+            <svg viewBox="0 0 40 40"><circle class="roundel-track" cx="20" cy="20" r="15.9155"/><circle class="roundel-arc" id="chipArc" cx="20" cy="20" r="15.9155" pathLength="100"/></svg>
+            <span class="roundel-value" id="chipPct">–</span>
+          </span>
+          <span class="chip-score" id="chipScore" aria-hidden="true" hidden><span class="num" id="chipCorrect">0</span><span class="chip-of"><span class="wide">&nbsp;of&nbsp;</span><span class="narrow">/</span></span><span class="num" id="chipAnswered">0</span><span class="wide">&nbsp;correct</span></span>
+          <span class="chip-streak" id="chipStreakWrap" aria-hidden="true">
+            <svg class="ico"><use href="#i-flame"/></svg><span class="num" id="chipStreak">0</span><span class="wide">&nbsp;in a row</span>
+          </span>
+          <span class="chip-open" aria-hidden="true"><svg class="ico"><use href="#i-chart"/></svg><span class="wide">Stats</span></span>
+          <span class="sr-only" id="chipLabel">Open your stats</span>
+        </button>
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch to dark theme">
+          <svg class="ico"><use href="#i-moon"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
 
-          <div class="stats-text">
-            <div><strong id="correctCount">0</strong> correct</div>
-            <div><strong id="attemptCount">0</strong> attempted</div>
+  <main class="stage">
+    <article class="q-card is-loading" id="card" tabindex="-1" aria-busy="true">
+      <div class="q-head">
+        <figure class="q-figure" id="qFigure">
+          <img id="qImage" alt="" width="200" height="200" decoding="async">
+        </figure>
+        <div class="q-body">
+          <p class="q-meta">
+            <span class="q-topic" id="qTopic"></span>
+            <span class="q-flag" id="qFlag" hidden><svg class="ico" aria-hidden="true"><use href="#i-redo"/></svg>Missed earlier</span>
+          </p>
+          <h1 class="q-text" id="qText"></h1>
+        </div>
+      </div>
+
+      <div class="q-options" id="qOptions" role="group" aria-labelledby="qText"></div>
+
+      <section class="feedback" id="feedback" hidden aria-labelledby="fbTitle">
+        <div class="fb-head">
+          <span class="fb-badge" aria-hidden="true"><svg class="ico"><use id="fbIcon" href="#i-check"/></svg></span>
+          <div class="fb-heading">
+            <h2 class="fb-title" id="fbTitle">Correct</h2>
+            <p class="fb-sub" id="fbSub"></p>
           </div>
         </div>
-        <span id="pageInfo"></span>
+        <div class="fb-explain" id="fbExplain">
+          <p class="fb-answer" id="fbAnswer"></p>
+          <p class="fb-text" id="fbText"></p>
+          <p class="fb-ref"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span id="fbRef"></span></p>
+        </div>
+        <div class="lane" id="lane" hidden aria-hidden="true"><span class="lane-fill" id="laneFill"></span></div>
+        <div class="fb-actions">
+          <button class="btn btn-quiet" id="explainBtn" type="button">Explain</button>
+          <button class="btn btn-primary" id="nextBtn" type="button">Next question</button>
+        </div>
+      </section>
+
+      <div class="q-error" id="qError" hidden>
+        <h1 class="q-text">The questions didn't load</h1>
+        <p>Check your connection, then try again.</p>
+        <button class="btn btn-primary" id="retryBtn" type="button">Try again</button>
       </div>
+    </article>
+    <p class="sr-only" id="announcer" aria-live="polite"></p>
+  </main>
 
-    <div class="end-message" id="endMessage" style="display:none;">
-      You’ve reached the end of this session’s questions.<br />
-      Refresh the page to play again with a new random order.
+  <footer class="site-footer">
+    <p>Practice questions for learning only. Always check the <a href="https://www.nzta.govt.nz/roadcode/" target="_blank" rel="noopener">official Road Code</a>.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog class="sheet" id="statsDialog" aria-labelledby="sheetTitle">
+    <div class="sheet-panel">
+      <header class="sheet-head">
+        <h2 class="sheet-title" id="sheetTitle">Your stats</h2>
+        <button class="icon-btn" id="sheetClose" type="button" aria-label="Close stats">
+          <svg class="ico"><use href="#i-close"/></svg>
+        </button>
+        <div class="seg" role="tablist" aria-label="Which answers to show">
+          <button class="seg-btn" role="tab" id="tab-session" data-tab="session" aria-selected="true" aria-controls="sheetBody" type="button">This session</button>
+          <button class="seg-btn" role="tab" id="tab-all" data-tab="all" aria-selected="false" aria-controls="sheetBody" type="button" tabindex="-1">All time</button>
+        </div>
+      </header>
+      <div class="sheet-body" id="sheetBody" role="tabpanel" aria-labelledby="tab-session" tabindex="0"></div>
+      <div class="viz-tip" id="vizTip" hidden></div>
     </div>
-    </div>
-    </div>
-  </div>
 
-  <script>
-    const questionsUrl = 'data/questions.json';
-
-    let questions = [];
-    let currentIndex = 0;
-    let selectedOption = null;
-    let hasAnsweredCurrent = false;
-    let autoAdvanceTimeout = null;
-    let correctAnswers = 0;
-    let attemptedAnswers = 0;
-
-
-    const questionTextEl = document.getElementById('questionText');
-    // const metaInfoEl = document.getElementById('metaInfo');
-    const questionImageEl = document.getElementById('questionImage');
-    const optionsGridEl = document.getElementById('optionsGrid');
-    const submitBtn = document.getElementById('submitBtn');
-    const skipBtn = document.getElementById('skipBtn');
-    const feedbackEl = document.getElementById('feedback');
-    const progressTextEl = document.getElementById('progressText');
-    const pageInfoEl = document.getElementById('pageInfo');
-    const timerWrapperEl = document.getElementById('timerWrapper');
-    const timerBarEl = document.getElementById('timerBar');
-    const quizCardEl = document.getElementById('quizCard');
-    const endMessageEl = document.getElementById('endMessage');
-    const nextBtn = document.getElementById('nextBtn');
-
-async function loadQuestions() {
-  const skeleton = document.getElementById('skeletonLoader');
-  const quizContent = document.getElementById('quizCardContent');
-
-  try {
-    // Keep skeleton visible
-    skeleton.style.display = 'block';
-    quizContent.style.display = 'none';
-
-    // Artificial delay to stabilize loading
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    const res = await fetch(questionsUrl, { cache: "no-store" });
-
-    // Wait a bit more to avoid flicker
-    await new Promise(resolve => setTimeout(resolve, 200));
-
-    if (!res.ok) {
-      throw new Error('Failed to load questions.json');
-    }
-
-    const data = await res.json();
-
-    // Hide skeleton, show quiz
-    skeleton.style.display = 'none';
-    quizContent.style.display = 'block';
-
-    questions = shuffleArray(data.slice());
-    currentIndex = 0;
-
-    updateStats?.();
-    renderCurrentQuestion();
-    updateNavButtons();
-
-  } catch (err) {
-    console.error(err);
-
-    skeleton.innerHTML = `
-      <div style="padding: 20px; text-align:center; color:#b71c1c;">
-        <strong>Could not load questions.json</strong><br>
-        Please check the file path and try again.
+    <dialog class="confirm" id="resetDialog" aria-labelledby="resetTitle" aria-describedby="resetText">
+      <h2 id="resetTitle">Reset all stats?</h2>
+      <p id="resetText">This deletes your answer history, sessions and streaks on this device. You can't undo this.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-quiet" id="resetCancel" type="button">Keep my stats</button>
+        <button class="btn btn-danger" id="resetConfirm" type="button">Reset stats</button>
       </div>
-    `;
-  }
-}
+    </dialog>
+  </dialog>
 
-    function shuffleArray(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    function renderCurrentQuestion() {
-      clearTimeout(autoAdvanceTimeout);
-      stopTimer();
-
-      if (!questions.length || currentIndex < 0 || currentIndex >= questions.length) {
-        quizCardEl.style.display = 'none';
-        endMessageEl.style.display = 'block';
-        return;
-      }
-
-      const q = questions[currentIndex];
-      hasAnsweredCurrent = false;
-      selectedOption = null;
-      submitBtn.style.display = 'inline-block';
-      nextBtn.style.display = 'none';
-      feedbackEl.textContent = '';
-      submitBtn.classList.remove('disabled');
-      skipBtn.classList.remove('disabled');
-
-      quizCardEl.style.animation = 'none';
-      void quizCardEl.offsetWidth;
-      quizCardEl.style.animation = 'floatIn 0.4s ease-out';
-
-      questionTextEl.textContent = q.Question;
-      // metaInfoEl.textContent = `RoboCrax ID: ${q.ID}`;
-      pageInfoEl.textContent = q.Page ? `Road Code Page ${q.Page}` : '';
-      questionImageEl.src = q.Image ? `images/${q.Image}` : '';
-      questionImageEl.alt = q.Image ? `Image for question ${q.ID}` : 'Question image';
-
-      optionsGridEl.innerHTML = '';
-      const optionKeys = ['A', 'B', 'C', 'D', 'E'];
-      const availableOptions = optionKeys.filter(k => q[k]);
-
-      availableOptions.forEach((key, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.dataset.optionKey = key;
-
-        const letterSpan = document.createElement('span');
-        letterSpan.className = 'option-letter';
-        letterSpan.textContent = key;
-
-        const textSpan = document.createElement('span');
-        textSpan.className = 'option-text';
-        textSpan.textContent = q[key];
-
-        btn.appendChild(letterSpan);
-        btn.appendChild(textSpan);
-
-        btn.addEventListener('click', () => {
-          if (hasAnsweredCurrent) return;
-          selectOption(btn);
-        });
-
-        optionsGridEl.appendChild(btn);
-      });
-
-      // If fewer than 5 options, grid will naturally leave empty space.
-      progressTextEl.textContent = `Question ${currentIndex + 1}`;
-    }
-
-    function selectOption(btn) {
-      if (hasAnsweredCurrent) return;
-
-      const allBtns = optionsGridEl.querySelectorAll('.option-btn');
-      allBtns.forEach(b => b.classList.remove('selected'));
-
-      btn.classList.add('selected');
-      selectedOption = btn.dataset.optionKey;
-    }
-
-    function lockOptions() {
-      const allBtns = optionsGridEl.querySelectorAll('.option-btn');
-      allBtns.forEach(b => b.classList.add('disabled'));
-    }
-
-    function unlockOptions() {
-      const allBtns = optionsGridEl.querySelectorAll('.option-btn');
-      allBtns.forEach(b => b.classList.remove('disabled', 'correct', 'incorrect', 'selected'));
-    }
-
-    function evaluateAnswer() {
-      if (hasAnsweredCurrent) return;
-      const q = questions[currentIndex];
-
-      if (!selectedOption) {
-        feedbackEl.textContent = 'Please select an option first.';
-        return;
-      }
-
-      hasAnsweredCurrent = true;
-      lockOptions();
-      submitBtn.classList.add('disabled');
-      skipBtn.classList.add('disabled');
-
-      const allBtns = optionsGridEl.querySelectorAll('.option-btn');
-      let selectedBtn = null;
-      let correctBtn = null;
-
-      allBtns.forEach(b => {
-        if (b.dataset.optionKey === selectedOption) selectedBtn = b;
-        if (b.dataset.optionKey === q.Correct) correctBtn = b;
-      });
-
-      const isCorrect = selectedOption === q.Correct;
-
-      if (isCorrect) {
-        selectedBtn.classList.add('correct');
-        feedbackEl.innerHTML = '<strong>Nice!</strong> That’s correct.';
-      } else {
-        selectedBtn.classList.add('incorrect');
-        correctBtn.classList.add('correct');
-        feedbackEl.innerHTML = `The correct answer is <strong>${q.Correct}</strong>.`;
-      }
-
-      attemptedAnswers++;
-      if (isCorrect) correctAnswers++;
-      updateStats();
-
-      // -----------------------------
-      // WRONG ANSWERS
-      // -----------------------------
-      if (!isCorrect) {
-        stopTimer();
-        clearTimeout(autoAdvanceTimeout);
-
-        // Hide Submit, show Next
-        submitBtn.style.display = 'none';
-        nextBtn.style.display = 'inline-block';
-
-        return; // Do NOT auto-advance
-      }
-
-      // -----------------------------
-      // CORRECT ANSWERS
-      // -----------------------------
-      startTimer();
-      autoAdvanceTimeout = setTimeout(() => {
-        goToNextQuestion();
-      }, 3000);
-    }
-
-
-function updateStats() {
-  const percent = attemptedAnswers === 0
-    ? 0
-    : Math.round((correctAnswers / attemptedAnswers) * 100);
-
-  const offset = 100 - percent;
-
-  document.getElementById('pieProgress').style.strokeDashoffset = offset;
-  document.getElementById('piePercent').textContent = percent + '%';
-  document.getElementById('correctCount').textContent = correctAnswers;
-  document.getElementById('attemptCount').textContent = attemptedAnswers;
-}
-
-
-
-    function startTimer() {
-      timerWrapperEl.classList.add('active');
-      timerBarEl.style.transition = 'none';
-      timerBarEl.style.transform = 'scaleX(0)';
-      void timerBarEl.offsetWidth;
-      timerBarEl.style.transition = 'transform 3s linear';
-      timerBarEl.style.transform = 'scaleX(1)';
-    }
-
-    function stopTimer() {
-      timerWrapperEl.classList.remove('active');
-      timerBarEl.style.transition = 'none';
-      timerBarEl.style.transform = 'scaleX(0)';
-    }
-
-    function goToNextQuestion() {
-      clearTimeout(autoAdvanceTimeout);
-      stopTimer();
-      if (currentIndex < questions.length - 1) {
-        currentIndex++;
-        unlockOptions();
-        renderCurrentQuestion();
-        updateNavButtons();
-      } else {
-        quizCardEl.style.display = 'none';
-        endMessageEl.style.display = 'block';
-        updateNavButtons();
-      }
-    }
-
-    function goToPrevQuestion() {
-      clearTimeout(autoAdvanceTimeout);
-      stopTimer();
-      if (currentIndex > 0) {
-        currentIndex--;
-        unlockOptions();
-        renderCurrentQuestion();
-        updateNavButtons();
-      }
-    }
-
-    function skipQuestion() {
-      if (hasAnsweredCurrent) return;
-      goToNextQuestion();
-    }
-
-    submitBtn.addEventListener('click', evaluateAnswer);
-    skipBtn.addEventListener('click', skipQuestion);
-    nextBtn.addEventListener('click', goToNextQuestion);
-
-    loadQuestions();
-    updateStats();
-
-  </script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

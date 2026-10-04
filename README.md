@@ -1,8 +1,8 @@
 # 🚗 NZ Road Code Practice Quiz
 
-A free web-based clone and enhancement of the **NZ Automobile Association (AA) / Waka Kotahi NZTA Road Code Theory Practice Test**. 
+A free, endless practice quiz for the **New Zealand Road Code** learner licence theory test.
 
-Unlike the official mobile app which restricts practice sessions to **10 questions per quiz**, this platform gives learner drivers complete control over their preparation—supporting full mock exams, custom batch sizes, category-specific drills, and an **unlimited/endless quiz mode**.
+There are no 10-question limits and no end screen. Questions keep coming, every answer is explained, and your progress is saved so you pick up exactly where you left off.
 
 Accessible directly from any modern web browser on smartphones, tablets, laptops, and desktops without requiring app store downloads or in-app purchases.
 
@@ -10,37 +10,84 @@ Accessible directly from any modern web browser on smartphones, tablets, laptops
 
 ## 🌟 Key Features
 
-* **🚫 No 10-Question Limit:** Practice as few or as many questions as you want in a single sitting. Choose from quick 10-question refreshers, official 35-question NZTA exam simulations, or an endless marathon mode.
-* **🌐 Universal & Responsive:** Built as a lightweight Progressive Web App (PWA) that runs smoothly across iOS, Android, macOS, Windows, Linux, and ChromeOS.
-* **🎯 Official NZTA Format & Scoring:**
-  * **Learner Car Licence (Class 1):** 35 questions (32 correct required to pass).
-  * Timed and untimed test modes with realistic question weighting across General, Behaviour, Emergencies, Intersection, Parking, and Signs.
-* **💡 Instant Explanations & References:** Immediate feedback with official New Zealand Road Code references, rule explanations, and visual diagram breakdowns.
-* **📊 Comprehensive Progress & Mistake Bank:** Tracks weak categories, bookmarked difficult questions, and automatically compiles an "Incorrect Answers" review pool.
-* **🎨 Modern, Accessible UI:** Clean dark/light theme, high-contrast traffic diagram rendering, keyboard navigation support, and full mobile touch optimization.
+* **♾️ Endless practice:** Questions load one after another in a shuffled order. The quiz never shows how many questions there are in total or how far through the bank you are.
+* **⏯️ Carries on where you left off:** Your place, your question order and an unanswered question all survive a reload or closing the tab.
+* **✅ Quick feedback:** Get it right and the next question loads after 3 seconds (tap *Explain* to stop and read why). Get it wrong and you see the right answer, a Road Code explanation and its page reference, then tap *Next question* when you're ready.
+* **🔁 Second chances:** Questions you get wrong come back a few questions later, and questions you haven't seen or have missed before tend to come up sooner.
+* **📊 Stats as you go:** The header shows this session's accuracy, score and current streak. Tap it for the full picture.
+* **📈 Detailed analytics:** For this session and across every past session saved on the device:
+  * Test readiness: how your latest 35 answers compare with the real test (32 of 35 to pass)
+  * Accuracy, streaks, time practising and average answer time
+  * Every answer as a correct/incorrect timeline, plus running and rolling accuracy charts
+  * Accuracy by topic, weakest first
+  * A practice calendar, session history, answer speed and time-of-day patterns
+  * Your most-missed questions with their answers and explanations
+  * Download your data, or reset it
+* **📱 Mobile first:** Large tap targets, a layout built for phones, light and dark themes, keyboard shortcuts on desktop, and it can be added to your home screen.
+
+### Keyboard shortcuts
+
+| Key | Action |
+| --- | --- |
+| `1`–`4` or `A`–`D` | Choose an answer |
+| `Enter`, `→` or `N` | Next question |
+| `S` | Open your stats |
+| `Esc` | Close your stats |
 
 ---
 
-## 📂 Question Bank & Categories
+## 📂 Question Bank & Topics
 
-The question database covers all official New Zealand Road Code topics:
+222 car (Class 1) questions, each with a picture, an explanation and a Road Code page reference, grouped into 13 topics:
 
-* 🛑 **Give Way & Intersection Rules** (Controlled, Uncontrolled, Roundabouts, T-Intersections)
-* 🚸 **Signs, Signals & Road Markings** (Compulsory, Warning, Information)
-* 🅿️ **Parking & Stopping Regulations**
-* 🌧️ **Hazard Awareness & Adverse Conditions** (Night driving, Rain, Fog, Gravel roads)
-* ⚠️ **Emergencies & Crash Procedures**
-* 🍷 **Alcohol, Drugs & Fatigue Laws**
-* 🚙 **General Road Safety & Overtaking Rules**
-* 🏍️ **Licence Specifics:** Car (Class 1), Motorcycle (Class 6), Heavy Vehicle (Classes 2–5) *(optional add-on packs)*
+* 🛑 **Intersections** (give way rules, Stop and Give Way signs, roundabouts, traffic signals)
+* 🚸 **Signs & signals** (signs, traffic lights, road markings, reflectors)
+* 🏎️ **Speed & following distance**
+* ↪️ **Lanes & turning**
+* 🚙 **Overtaking**
+* 🅿️ **Parking**
+* 🌧️ **Night & weather**
+* 🚶 **Hazards & road users** (pedestrians, cyclists, animals, hazard spotting)
+* 🚆 **Rail, bridges & motorways**
+* ⚠️ **Emergencies**
+* 🍷 **Alcohol & fatigue**
+* 🪪 **Licences & law**
+* 🔧 **Vehicle & loads**
+
+Questions live in [`data/questions.json`](data/questions.json) and their pictures in [`images/`](images/).
+
+---
+
+## 🛠️ Running Locally
+
+It's a static site with no build step. Serve the folder over HTTP (opening `index.html` straight from disk won't load the questions):
+
+```bash
+python -m http.server 8000
+```
+
+Then open <http://localhost:8000>.
+
+```text
+index.html            Page markup
+css/app.css           Styles and themes
+js/main.js            Quiz flow, quick stats, theme, keyboard shortcuts
+js/store.js           Saved progress, question order and the answer log (localStorage)
+js/stats.js           Analytics calculations
+js/dashboard.js       The stats sheet
+js/charts.js          SVG charts and tooltips
+data/questions.json   Question bank
+```
+
+Progress is stored in the browser's `localStorage` under `nzrc:v1`, so it stays on that device and browser.
 
 ---
 
 ## ⚖️ Disclaimer
 
-*This project is an independent educational tool created to assist New Zealand drivers with studying the official road rules. It is not officially affiliated with, endorsed by, or sponsored by the New Zealand Automobile Association (AA) or Waka Kotahi NZ Transport Agency.*
+*This project is an independent educational tool created to assist New Zealand drivers with studying the official road rules. It is not officially affiliated with, endorsed by, or sponsored by the New Zealand Automobile Association (AA) or NZ Transport Agency Waka Kotahi.*
 
-*Always refer to the official [Waka Kotahi NZTA Road Code](https://www.nzta.govt.nz/resources/roadcode/) for the authoritative legislation and rules.*
+*Always refer to the official [NZTA Road Code](https://www.nzta.govt.nz/roadcode/) for the authoritative legislation and rules.*
 
 ---
 
