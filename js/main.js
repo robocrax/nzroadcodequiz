@@ -11,8 +11,8 @@ const STREAK_MILESTONES = [5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 75, 100, 150, 
 const ui = {
   topbar: $('.topbar'),
   card: $('#card'),
-  head: $('.q-head'),
   figure: $('#qFigure'),
+  body: $('.q-body'),
   image: $('#qImage'),
   topic: $('#qTopic'),
   flag: $('#qFlag'),
@@ -134,7 +134,7 @@ async function showQuestion(id, first = false) {
   stopAdvance();
   let exit = [];
   if (!first && !reducedMotion()) {
-    exit = [ui.head, ui.options, ui.feedback]
+    exit = [ui.figure, ui.body, ui.options, ui.feedback]
       .filter((node) => !node.hidden)
       .map((node) =>
         node.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-18px)' }], {
@@ -157,10 +157,13 @@ async function showQuestion(id, first = false) {
   if (window.scrollY > cardTop) window.scrollTo({ top: Math.max(0, cardTop) });
 
   if (!first && !reducedMotion()) {
-    ui.head.animate([{ opacity: 0, transform: 'translateX(22px)' }, { opacity: 1, transform: 'none' }], {
-      duration: 320,
-      easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
-    });
+    // The picture and question animate separately because on desktop they sit in different grid cells.
+    for (const node of [ui.figure, ui.body]) {
+      node.animate([{ opacity: 0, transform: 'translateX(22px)' }, { opacity: 1, transform: 'none' }], {
+        duration: 320,
+        easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
+      });
+    }
   }
   phase = 'question';
   clock.reset();

@@ -23,7 +23,8 @@ Accessible directly from any modern web browser on smartphones, tablets, laptops
   * A practice calendar, session history, answer speed and time-of-day patterns
   * Your most-missed questions with their answers and explanations
   * Download your data, or reset it
-* **📱 Mobile first:** Large tap targets, a layout built for phones, light and dark themes, keyboard shortcuts on desktop, and it can be added to your home screen.
+* **📱 Mobile first:** Large tap targets, a layout built for phones, light and dark themes, and it can be added to your home screen.
+* **🖥️ Full screen on computers:** On a wide screen the quiz fills the window: the question on the left, a large picture top-right, the answers in two columns along the bottom, plus keyboard shortcuts.
 
 ### Keyboard shortcuts
 
